@@ -132,4 +132,13 @@ class AccountController extends Controller
         $reviews = $reviews->paginate(10);
         return view('account.my-reviews.my-reviews',compact('reviews'));
     }
+
+    public function edit($id){
+
+        $review = Review::where([
+            'id' => $id,
+            'user_id' => Auth::user()->id
+        ])->first();
+
+    }
 }
