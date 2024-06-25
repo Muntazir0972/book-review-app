@@ -11,7 +11,7 @@
             @include('layouts.message')
             <div class="card border-0 shadow">
                 <div class="card-header  text-white">
-                    My Reviews
+                    Reviews
                 </div>
                 <div class="card-body pb-0">            
                     <div class="d-flex justify-content-end">

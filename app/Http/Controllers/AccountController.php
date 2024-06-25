@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Review;
 class AccountController extends Controller
 {
     public function register(){
@@ -113,5 +114,22 @@ class AccountController extends Controller
         return redirect()->route('account.login');
     }
 
-    
+    public function myReviews(Request $data){
+
+        $reviews = Review::with('book')->where('user_id',Auth::user()->id);
+        $reviews = $reviews->orderBy('created_at','DESC');
+
+        if (!empty($data->keyword)) {
+            $keyword = $data->keyword;
+            $reviews = $reviews->where(function($query) use ($keyword){
+                $query->where('review','like','%' . $keyword . '%')
+                ->orwhereHas('book',function($query) use ($keyword){
+                    $query->where('title','like','%' . $keyword . '%');
+                });
+            });
+        }
+
+        $reviews = $reviews->paginate(10);
+        return view('account.my-reviews.my-reviews',compact('reviews'));
+    }
 }
