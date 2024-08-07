@@ -16,7 +16,10 @@ class BookController extends Controller
             $books->where('title','like','%'.$data->keyword.'%');
 
         }
-        $books = $books->paginate(10);
+        $books = $books->withCount('reviews')
+                        ->withSum('reviews','rating')
+                        ->paginate(10);
+                        
         return view('books.list',compact('books'));
     }
 

@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function index(Request $data){
 
-        $books = Book::orderBy('created_at','DESC');
+        $books = Book::withCount('reviews')->withSum('reviews','rating')->orderBy('created_at','DESC');
 
         if (!empty($data->keyword)) {
             $keyword = $data->keyword;
@@ -30,13 +30,18 @@ class HomeController extends Controller
 
         $book = Book::with(['reviews.user','reviews' => function($query){
             $query->where('status',1);
-        }])->findOrFail($id);
+        }])->withCount('reviews')->withSum('reviews','rating')->findOrFail($id);
 
         if ($book->status == 0) {
             abort(404);
         }
 
-        $relatedBooks = Book::where('status',1)->take(3)->where('id','!=',$id)->inRandomOrder()->get();
+        $relatedBooks = Book::where('status',1)
+                            ->withCount('reviews')
+                            ->withSum('reviews','rating')
+                            ->take(3)->where('id','!=',$id)
+                            ->inRandomOrder()
+                            ->get();
         return view('book-detail',compact('book','relatedBooks'));
     }
 

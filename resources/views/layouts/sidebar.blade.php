@@ -12,7 +12,7 @@
         </div>
         <div class="h5 text-center">
             <strong>{{ Auth::user()->name }}</strong>
-            <p class="h6 mt-2 text-muted">5 Reviews</p>
+            <p class="h6 mt-2 text-muted">{{ (Auth::user()->review->count() > 1 ) ? Auth::user()->review->count() .' Reviews' : Auth::user()->review->count() .' Review' }} </p>
         </div>
     </div>
 </div>
